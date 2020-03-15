@@ -1,0 +1,261 @@
+\documentclass[a4paper]{article}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{paralist}
+\usepackage{epstopdf}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyvrb}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{float}
+\usepackage{paralist}
+\usepackage[svgname]{xcolor}
+\usepackage{enumerate}
+\usepackage{array}
+\usepackage{times}
+\usepackage{url}
+\usepackage{fancyhdr}
+\usepackage{comment}
+\usepackage{environ}
+\usepackage{times}
+\usepackage{textcomp}
+\usepackage{caption}
+\usepackage{bbm}
+
+
+\urlstyle{rm}
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[]
+\newtheorem{conjecture}{Conjecture}[]
+\newtheorem{example}{Example}[]
+\newtheorem{theorem}{Theorem}[]
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+
+\floatname{algorithm}{Procedure}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\norm}[1]{\lVert#1\rVert}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\Nat}{\mathbb{N}}
+\newcommand{\br}[1]{\{#1\}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+
+\newcommand{\vc}[1]{\boldsymbol{#1}}
+\newcommand{\xv}{\vc{x}}
+\newcommand{\Sigmav}{\vc{\Sigma}}
+\newcommand{\alphav}{\vc{\alpha}}
+\newcommand{\muv}{\vc{\mu}}
+
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
+\def\x{\mathbf x}
+\def\y{\mathbf y}
+\def\w{\mathbf w}
+\def\v{\mathbf v}
+\def\E{\mathbb E}
+\def\V{\mathbb V}
+\def\ind{\mathbbm 1}
+
+% TO SHOW SOLUTIONS, include following (else comment out):
+\newenvironment{soln}{
+    \leavevmode\color{blue}\ignorespaces
+}{}
+
+
+\hypersetup{
+%    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+\geometry{
+  top=1in,            % <-- you want to adjust this
+  inner=1in,
+  outer=1in,
+  bottom=1in,
+  headheight=3em,       % <-- and this
+  headsep=2em,          % <-- and this
+  footskip=3em,
+}
+
+
+\pagestyle{fancyplain}
+\lhead{\fancyplain{}{Homework 5}}
+\rhead{\fancyplain{}{CS 760 Machine Learning}}
+\cfoot{\thepage}
+
+\title{\textsc{Homework 5}} % Title
+
+%%% NOTE:  Replace 'NAME HERE' etc., and delete any "\red{}" wrappers (so it won't show up as red)
+
+\author{
+\red{$>>$NAME HERE$<<$} \\
+\red{$>>$ID HERE$<<$}\\
+} 
+
+\date{}
+
+\begin{document}
+
+\maketitle 
+
+
+\textbf{Instructions:} 
+Although this is a programming homework, you only need to hand in a pdf answer file.
+There is no need to submit the latex source or any code.
+You can choose any programming language, as long as you implement the algorithm from scratch. 
+
+Use this latex file as a template to develop your homework.
+Submit your homework on time as a single pdf file to Canvas.
+Please check Piazza for updates about the homework.
+
+
+
+\section*{Linear Regression (100 pts total, 10 each)}
+
+The Wisconsin State Climatology Office keeps a record on
+the number of days Lake Mendota was covered by ice at
+\url{http://www.aos.wisc.edu/~sco/lakes/Mendota-ice.html}.
+Same for Lake Monona:
+\url{http://www.aos.wisc.edu/~sco/lakes/Monona-ice.html}.
+As with any real problems, the data is not as clean or as organized as one would like for machine learning.
+Curate two clean data sets for each lake, respectively, starting from 1855-56 and ending in 2018-19.
+Let $x$ be the year: for 1855-56, $x=1855$; for 2017-18, $x=2017$; and so on.
+Let $y$ be the ice days in that year: for Mendota and 1855-56, $y=118$; for 2017-18, $y=94$; and so on.
+Some years have multiple freeze thaw cycles such as 2001-02, that one should be $x=2001, y=21$.
+
+\begin{enumerate}
+\item
+Plot year vs. ice days for the two lakes as two curves in the same plot.
+Produce another plot for year vs. $y_{Monona} - y_{Mendota}$.
+
+
+\item
+Split the datasets: $x\le 1970$ as training, and $x>1970$ as test.
+(Comment: due to the temporal nature this is NOT an iid split.  But we will work with it.)
+On the training set, compute the sample mean $\bar y=\frac{1}{n}\sum_{i=1}^n y_i$ and the sample standard deviation $\sqrt{\frac{1}{n-1}\sum_{i=1}^n (y_i-\bar y)^2}$ for the two lakes, respectively.
+
+\item
+Using training sets, train a linear regression model
+$$\hat y_{Mendota} = \beta_0 + \beta_1 x + \beta_2 y_{Monona}$$
+to predict $y_{Mendota}$.
+Note: we are treating $y_{Monona}$ as an observed feature.
+Do this by finding the closed-form MLE solution for $\beta=(\beta_0, \beta_1, \beta_2)^\top$ (no regularization):
+$$\min_\beta {1\over n} \sum_{i=1}^n (x_i^\top \beta - y_i)^2.$$
+Give the MLE formula in matrix form (define your matrices), then give the MLE value of $\beta_0, \beta_1, \beta_2$. 
+
+\item
+Using the MLE above, give the (1) mean squared error and (2) $R^2$ values on the Mendota test set.
+(You will need to use the Monona test data as observed features.)
+
+
+\item
+``Reset'' to Q3, but this time use gradient descent to learn the $\beta$'s.
+Recall our objective function is the mean squared error on the training set:
+$${1\over n} \sum_{i=1}^n (x_i^\top \beta - y_i)^2.$$
+Derive the gradient.
+
+\item
+Implement gradient descent.  Initialize $\beta_0= \beta_1= \beta_2=0$.  Use a fixed stepsize parameter $\eta=0.1$ and print the first 10 iteration's objective function value.
+Tell us if further iterations make your gradient descent converge, and if yes when; compare the $\beta$'s to the closed-form solution.
+Try other $\eta$ values and tell us what happens.
+\textbf{Hint:} Update $\beta_0, \beta_1, \beta_2$ simultaneously in an iteration.  Don't use a new $\beta_0$ to calculate $\beta_1$, and so on.
+
+\item
+As preprocessing, normalize your year and Monona features (but not $y_{Mendota}$).
+Then repeat Q6.
+
+\item 
+``Reset'' to Q3 (no normalization,  use closed-form solution), but train a linear regression model without using Monona:
+$$\hat y_{Mendota} = \gamma_0 + \gamma_1 x.$$
+  \begin{enumerate}
+  \item Interpret the sign of $\gamma_1$.
+  \item Some analysts claim that because $\beta_1$ the closed-form solution in Q3 is positive, fixing all other factors, as the years go by the number of Mendota ice days will increase, namely the model in Q3 indicates a cooling trend. Discuss this viewpoint, relate it to question 8(a).
+  \end{enumerate}
+
+\item
+Of course, Weka has linear regression.  Reset to Q3.  Save the training data in .arff format for Weka.  Use classifiers / functions / LinearRegression.  Choose ``Use training set.''  
+  Bring up Linear Regression options, set ``ridge'' to 0 so it does not regularize.  Run it and tell us the model: it is in the output in the form of ``$\beta_1$ * year + $\beta_2$ * Monona + $\beta_0$.'' 
+
+\item Ridge regression.
+\begin{enumerate}
+\item
+Then set ridge to 1 and tell us the resulting Weka model.
+\item
+Meanwhile, derive the closed-form solution in matrix form for the ridge regression problem:
+$$\min_\beta \left({1\over n} \sum_{i=1}^n (x_i^\top \beta - y_i)^2 \right) + \lambda \|\beta\|_A^2$$
+where 
+$$\|\beta\|_A^2 := \beta^\top A \beta$$
+and
+$$A=
+\begin{bmatrix}
+0 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}.$$
+This $A$ matrix has the effect of NOT regularizing the bias $\beta_0$, which is standard practice in ridge regression.
+Note: Derive the closed-form solution, do not blindly copy lecture notes.
+\item
+Let $\lambda=1$ and tell us the value of $\beta$ from your ridge regression model.
+\end{enumerate}
+
+\end{enumerate}
+
+
+
+\section*{Extra Credit: Multinomial Na\"ive Bayes [10 pts]}
+Consider the Multinomial Na\"ive Bayes model. For each point $(\mathbf{x}, y)$, $y \in \{0, 1\}$, $\mathbf{x} = (x_1, x_2, \ldots, x_M)$ where each $x_j$ is an integer from $\{1, 2, \ldots, K\}$ for $1\le j \le M$. Here $K$ and $M$ are two fixed integer. 
+
+Suppose we have $N$ data points $\{(\mathbf{x}^{(i)}, y^{(i)}): 1 \le i \le N\}$, generated as follows.
+\begin{algorithmic}
+\STATE \textbf{for} $i \in \{1, \ldots, N\}$: 
+\STATE \quad $y^{(i)} \sim \text{Bernoulli}(\phi)$
+\STATE \quad \textbf{for} $j \in \{1, \ldots, M\}$:
+\STATE \quad \quad $x_j^{(i)} \sim \text{Multinomial}(\mathbf{\theta}_{y^{(i)}}, 1)$
+\end{algorithmic}
+Here $\phi \in \mathbb{R}$ and $\mathbf{\theta}_k \in \mathbb{R}^{K} (k \in \{0,1\}$ are parameters. Note that $\sum_l \theta_{k, l} = 1$ since they are the parameters of a multinomial distribution.
+
+Derive the formula for estimating the parameters $\phi$ and $\mathbf{\theta}_k$, as we have done in the lecture for the Bernoulli Na\"ive Bayes model. Show the steps.
+
+
+\section*{Extra Credit: Logistic Regression [10 pts]}
+(1) Suppose for each class $i \in \{1,\ldots, K\}$, the class-conditional density $p(\mathbf{x}| y = i)$ is normal with mean $\mathbf{\mu}_i \in \mathbb{R}^d$ and the same covariance $\mathbf{\Sigma} \in \mathbb{R}^{d \times d}$: 
+\[
+  p(\mathbf{x} | y=i) = N(\mathbf{x}| \mathbf{\mu}_i, \mathbf{\Sigma}).
+\]
+Compute $p(y=i|\mathbf{x})$. Can it be represented as a softmax over a linear transformation of $\mathbf{x}$? Show the calculation steps.
+
+(2) Suppose $p(\mathbf{x}| y = i)$ has different covariances $\mathbf{\Sigma}_i \in \mathbb{R}^{d \times d}$: 
+\[
+  p(\mathbf{x} | y=i) = N(\mathbf{x}| \mathbf{\mu}_i, \mathbf{\Sigma}_i).
+\]
+Again, compute $p(y=i|\mathbf{x})$. Can it be represented as a softmax over a linear transformation of $\mathbf{x}$? Show the calculation steps.
+
+
+\end{document}
+\bibliographystyle{apalike}
+\end{document}
