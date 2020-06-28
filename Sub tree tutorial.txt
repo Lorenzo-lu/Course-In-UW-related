@@ -1,0 +1,5 @@
+git subtree add --prefix=CS760/PROJ https://github.com/Lorenzo-lu/CS-760-Machine-Learning-Final-Project.git master --squash
+
+--prefix=CS760/PROJ is the directory, no space around =
+remember the "master", the ref
+--squash is optional
