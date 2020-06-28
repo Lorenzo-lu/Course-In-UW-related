@@ -1,0 +1,11 @@
+/doc/*
+!/doc/report.tex
+!/doc/neurips_2018.sty
+/tut4-model.pt
+/.data/
+/.vector_cache/
+/.idea/
+/CNN-model.pt
+/CNN/.data/imdb/
+/CNN/.vector_cache/
+/CNN/CNN-model.pt

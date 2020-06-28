@@ -1,0 +1,14 @@
+The model has 2,741,101 trainable parameters
+Epoch: 01 | Epoch Time: 0m 30s
+	Train Loss: 0.637 | Train Acc: 63.06%
+	 Val. Loss: 0.468 |  Val. Acc: 79.60%
+Epoch: 02 | Epoch Time: 0m 29s
+	Train Loss: 0.430 | Train Acc: 80.40%
+	 Val. Loss: 0.386 |  Val. Acc: 82.90%
+Epoch: 03 | Epoch Time: 0m 29s
+	Train Loss: 0.319 | Train Acc: 86.41%
+	 Val. Loss: 0.344 |  Val. Acc: 85.54%
+Epoch: 04 | Epoch Time: 0m 29s
+	Train Loss: 0.238 | Train Acc: 90.28%
+	 Val. Loss: 0.348 |  Val. Acc: 85.89%
+Test. Loss: 0.361 |  Test. Acc: 85.14% |  Test. precision: 82.21%|  Test. recall: 89.68% |  Test. F1: 85.79
