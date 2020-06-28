@@ -3,3 +3,7 @@ git subtree add --prefix=CS760/PROJ https://github.com/Lorenzo-lu/CS-760-Machine
 --prefix=CS760/PROJ is the directory, no space around =
 remember the "master", the ref
 --squash is optional
+
+if doesn't work,
+you can 
+git reset --hard
